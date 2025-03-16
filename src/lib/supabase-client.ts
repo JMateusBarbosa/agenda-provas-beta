@@ -11,14 +11,15 @@
  * 4. Configure your Supabase URL and public anon key below
  */
 
-/*
+
+
 import { createClient } from '@supabase/supabase-js';
 import { ExamSchedule } from './types';
 import { toSupabaseExam, fromSupabaseExam } from './supabase-schema';
 
 // Replace with your Supabase URL and public anon key when deploying
-const supabaseUrl = 'YOUR_SUPABASE_URL';
-const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+const supabaseUrl = 'https://lndunjdjtxqnxbafedfx.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxuZHVuamRqdHhxbnhiYWZlZGZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE5Nzc1NzgsImV4cCI6MjA1NzU1MzU3OH0.maudsrhpJc1mMSMAEyFBIkZJIJ2I0mVeTc7Q6FclcRo';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -31,6 +32,8 @@ export const examApi = {
       .select('*')
       .order('exam_date', { ascending: true });
     
+    console.log('Dados retornados do Supabase:', data);
+
     if (error) throw error;
     
     return data ? data.map(fromSupabaseExam) : [];
@@ -97,4 +100,4 @@ export const examApi = {
     if (error) throw error;
   }
 };
-*/
+

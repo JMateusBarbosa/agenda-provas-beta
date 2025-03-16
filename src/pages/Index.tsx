@@ -7,13 +7,14 @@ import ScheduleTable from '@/components/ScheduleTable';
 import FilterBar from '@/components/FilterBar';
 import Navbar from '@/components/Navbar';
 import ExamPagination from '@/components/ExamPagination';
-import { sampleExamSchedules } from '@/lib/data';
+//import { sampleExamSchedules } from '@/lib/data';
+import { examApi } from '@/lib/supabase-client';
 import { ExamSchedule, FilterState, ExamStatus } from '@/lib/types';
 
 const ITEMS_PER_PAGE = 10;
 
 const Index = () => {
-  const [exams, setExams] = useState<ExamSchedule[]>(sampleExamSchedules);
+  const [exams, setExams] = useState<ExamSchedule[]>([]);
   const [filteredExams, setFilteredExams] = useState<ExamSchedule[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<FilterState>({
@@ -25,14 +26,34 @@ const Index = () => {
     status: 'all'
   });
   
+  useEffect(() => {
+    async function loadExams() {
+      try {
+        const data = await examApi.getExams();
+        setExams(data);
+        console.log('Exames carregados no estado:', data);
+      } catch (error) {
+        console.error('Erro ao buscar exames:', error);
+        toast({
+          title: "Erro",
+          description: "Não foi possível carregar os agendamentos.",
+          variant: "destructive",
+        });
+      }
+    }
+    loadExams();
+  }, []);
+  
+
   // Apply filters to exams and sort by today's exams first
   useEffect(() => {
     let result = [...exams];
 
     if (filters.studentName) {
       result = result.filter(exam => 
-        exam.studentName.toLowerCase().includes(filters.studentName.toLowerCase())
+        exam.studentName?.toLowerCase().includes(filters.studentName.toLowerCase())
       );
+      
     }
     
     if (filters.module) {
@@ -43,11 +64,12 @@ const Index = () => {
     
     if (filters.pcNumber && filters.pcNumber !== 'all') {
       result = result.filter(exam => 
-        exam.pcNumber === Number(filters.pcNumber)
+        String(exam.pcNumber) === String(filters.pcNumber)
       );
+      
     }
     
-    if (filters.examDate) {
+    if (filters.examDate instanceof Date) {
       result = result.filter(exam => 
         format(exam.examDate, 'yyyy-MM-dd') === format(filters.examDate, 'yyyy-MM-dd')
       );
@@ -94,30 +116,57 @@ const Index = () => {
   };
 
   // Handle status update
-  const handleUpdateExam = (id: string, updatedExam: Partial<ExamSchedule>) => {
-    const updatedExams = exams.map(exam => 
-      exam.id === id ? { ...exam, ...updatedExam } : exam
-    );
-    
-    setExams(updatedExams);
-    
-    toast({
-      title: "Atualização realizada",
-      description: "Os dados da prova foram atualizados com sucesso.",
-    });
+  const handleUpdateExam = async (id: string, updatedExam: Partial<ExamSchedule>) => {
+    try {
+      // Atualiza o exame no Supabase
+      const updated = await examApi.updateExam(id, updatedExam);
+  
+      // Atualiza o estado local
+      const updatedExams = exams.map(exam => 
+        exam.id === id ? { ...exam, ...updated } : exam
+      );
+      setExams(updatedExams);
+  
+      toast({
+        title: "Atualização realizada",
+        description: "Os dados da prova foram atualizados com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível atualizar os dados.",
+        variant: "destructive",
+      });
+      console.error("Erro ao atualizar o exame:", error);
+    }
   };
   
+  
   // Handle delete
-  const handleDeleteExam = (id: string) => {
-    const updatedExams = exams.filter(exam => exam.id !== id);
-    setExams(updatedExams);
-    
-    toast({
-      title: "Prova excluída",
-      description: "O agendamento da prova foi excluído com sucesso.",
-      variant: "destructive",
-    });
+  const handleDeleteExam = async (id: string) => {
+    try {
+      // Exclui o exame no Supabase
+      await examApi.deleteExam(id);
+  
+      // Atualiza o estado local
+      const updatedExams = exams.filter(exam => exam.id !== id);
+      setExams(updatedExams);
+  
+      toast({
+        title: "Prova excluída",
+        description: "O agendamento da prova foi excluído com sucesso.",
+        variant: "destructive",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível excluir o agendamento.",
+        variant: "destructive",
+      });
+      console.error("Erro ao excluir o exame:", error);
+    }
   };
+  
   
   // Handle page change
   const handlePageChange = (page: number) => {
