@@ -1,0 +1,146 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 210 100% 20%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Add subtle background pattern for visual interest */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: 
+      radial-gradient(#f0f8ff 1px, transparent 1px), 
+      radial-gradient(#f0f8ff 1px, transparent 1px);
+    background-position: 0 0, 25px 25px;
+    background-size: 50px 50px;
+    opacity: 0.3;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white bg-opacity-70 backdrop-blur-md border border-white border-opacity-20 shadow-lg;
+  }
+  
+  .filter-input {
+    @apply h-10 rounded-md border border-input bg-white px-3 py-2 text-sm transition-all duration-200 
+    focus:outline-none focus:ring-2 focus:ring-navy focus:border-navy shadow-sm;
+  }
+  
+  .table-row-hover {
+    @apply hover:bg-light-blue/50 transition-colors duration-200;
+  }
+  
+  .nav-link {
+    @apply px-4 py-2 rounded-md transition-all duration-200 hover:opacity-90 text-sm font-medium;
+  }
+  
+  .nav-link-active {
+    @apply bg-gold text-navy font-semibold;
+  }
+  
+  .table-container {
+    @apply rounded-md overflow-hidden shadow-md bg-white border border-border animate-fade-up;
+  }
+  
+  .button-primary {
+    @apply bg-navy text-white px-4 py-2 rounded-md transition-all duration-200 
+           hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-navy focus:ring-opacity-50;
+  }
+  
+  .button-secondary {
+    @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-md transition-all duration-200 
+           hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50;
+  }
+  
+  .button-danger {
+    @apply bg-failed text-white px-4 py-2 rounded-md transition-all duration-200 
+           hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-failed focus:ring-opacity-50;
+  }
+  
+  .button-edit {
+    @apply text-white bg-blue-500 hover:bg-blue-600 rounded-md p-1.5 transition-all duration-200;
+  }
+  
+  .button-delete {
+    @apply text-white bg-failed hover:bg-opacity-90 rounded-md p-1.5 transition-all duration-200;
+  }
+  
+  .status-badge {
+    @apply px-3 py-1 rounded-full text-xs font-medium text-white inline-block min-w-20;
+  }
+  
+  .status-pending {
+    @apply bg-pending;
+  }
+  
+  .status-approved {
+    @apply bg-approved;
+  }
+  
+  .status-failed {
+    @apply bg-failed;
+  }
+
+  /* Zebra striping for table rows */
+  .table-container tbody tr:nth-child(odd) {
+    @apply bg-white;
+  }
+  
+  .table-container tbody tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+  
+  /* Today's row should override zebra striping */
+  .table-container tbody tr.today-highlight {
+    @apply bg-[#FFF8DC];
+  }
+}
