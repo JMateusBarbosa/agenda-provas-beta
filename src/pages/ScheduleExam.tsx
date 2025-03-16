@@ -1,5 +1,7 @@
 
 import React, { useState } from 'react';
+import { examApi } from '@/lib/supabase-client';
+
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -80,8 +82,7 @@ const ScheduleExam = () => {
       examTime: false,
     });
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -95,16 +96,40 @@ const ScheduleExam = () => {
     
     setIsSaving(true);
     
-    // Simulate saving delay
-    setTimeout(() => {
+    try {
+      // Cria o novo exame utilizando a API do Supabase definida em examApi
+      const newExam = await examApi.createExam({
+        studentName,
+        module,
+        pcNumber: Number(pcNumber), // Certifique-se de enviar um número se for esse o tipo
+        examDate, // A função toSupabaseExam fará a conversão para ISO
+        examTime,
+        examType,
+        status: "Pendente", // Ou o status padrão que você deseja
+      });
+      
+      toast({
+        title: "Agendamento realizado",
+        description: "A prova foi agendada com sucesso!",
+        variant: "default", // Veja o próximo item para correção do variant
+      });
+      
       setIsSaving(false);
       setShowConfirmation(true);
-    }, 1000);
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro ao agendar a prova.",
+        variant: "destructive",
+      });
+      setIsSaving(false);
+    }
   };
 
   const handleConfirmationClose = () => {
     setShowConfirmation(false);
-    navigate('/');
+    //navigate('/');
   };
 
   const handleCancel = () => {
