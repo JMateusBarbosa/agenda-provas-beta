@@ -158,7 +158,23 @@ const TableRow: React.FC<TableRowProps> = ({ exam, isToday, onUpdate, onDelete }
       
       {/* Exam Type */}
       <td className="px-4 py-3 text-center border-b whitespace-nowrap">
-        {exam.examType}
+        {isEditing ? (
+          <Select
+            value={updatedExam.examType || exam.examType}
+            onValueChange={(value) => handleChange('examType', value)}
+          >
+            <SelectTrigger className="w-28 mx-auto">
+              <SelectValue placeholder={exam.examType} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="P1">P1</SelectItem>
+              <SelectItem value="Rec.1">Rec.1</SelectItem>
+              <SelectItem value="Rec.2">Rec.2</SelectItem>
+            </SelectContent>
+          </Select>
+        ) : (
+          exam.examType
+        )}
       </td>
       
       {/* Status */}
