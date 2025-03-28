@@ -149,7 +149,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ filters, setFilters }) => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos</SelectItem>
-                {["7:30", "8:30", "9:30", "14:00", "15:00", "16:00", "17:00"].map((time) => (
+                {["7:30", "8:30", "9:30", "14:00", "15:00", "16:00", "17:00","18:00"].map((time) => (
                   <SelectItem key={time} value={time}>
                     {time}
                   </SelectItem>

@@ -50,7 +50,7 @@ const ScheduleTable: React.FC<ScheduleTableProps> = ({ exams, onUpdate, onDelete
     return (
       <div className="w-full py-16 flex flex-col items-center justify-center bg-white rounded-lg border animate-fade-up">
         <div className="text-center text-gray-500">
-          <p className="text-xl font-semibold mb-2">Nenhuma prova encontrada para esta data.</p>
+          <p className="text-xl font-semibold mb-2">Nenhuma prova encontrada .</p>
           <p className="text-sm">Tente ajustar os filtros ou agendar uma nova prova.</p>
         </div>
       </div>

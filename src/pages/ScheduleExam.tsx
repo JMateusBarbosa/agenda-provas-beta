@@ -105,13 +105,13 @@ const ScheduleExam = () => {
         examDate, // A função toSupabaseExam fará a conversão para ISO
         examTime,
         examType,
-        status: "Pendente", // Ou o status padrão que você deseja
+        status: "Pendente", // Ou o status padrão que desejar
       });
       
       toast({
         title: "Agendamento realizado",
         description: "A prova foi agendada com sucesso!",
-        variant: "default", // Veja o próximo item para correção do variant
+        variant: "default", 
       });
       
       setIsSaving(false);
@@ -259,7 +259,7 @@ const ScheduleExam = () => {
                   <SelectValue placeholder="Selecione o horário" />
                 </SelectTrigger>
                 <SelectContent>
-                  {['7:30', '8:30', '9:30', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'].map((time) => (
+                  {['7:30', '8:30', '9:30', '14:00', '15:00', '16:00', '17:00', '18:00'].map((time) => (
                     <SelectItem key={time} value={time}>
                       {time}
                     </SelectItem>
