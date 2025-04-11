@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { format, isSameDay } from 'date-fns';
 import { Toaster } from '@/components/ui/toaster';
@@ -7,13 +6,14 @@ import ScheduleTable from '@/components/ScheduleTable';
 import FilterBar from '@/components/FilterBar';
 import Navbar from '@/components/Navbar';
 import ExamPagination from '@/components/ExamPagination';
-//import { sampleExamSchedules } from '@/lib/data';
 import { examApi } from '@/lib/supabase-client';
 import { ExamSchedule, FilterState, ExamStatus } from '@/lib/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 const ITEMS_PER_PAGE = 10;
 
 const Index = () => {
+  const { schoolId } = useAuth();
   const [exams, setExams] = useState<ExamSchedule[]>([]);
   const [filteredExams, setFilteredExams] = useState<ExamSchedule[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,8 +28,10 @@ const Index = () => {
   
   useEffect(() => {
     async function loadExams() {
+      if (!schoolId) return; // Não carregar se não tiver schoolId
+      
       try {
-        const data = await examApi.getExams();
+        const data = await examApi.getExams(schoolId);
         setExams(data);
         console.log('Exames carregados no estado:', data);
       } catch (error) {
@@ -42,9 +44,8 @@ const Index = () => {
       }
     }
     loadExams();
-  }, []);
+  }, [schoolId]);
   
-
   // Apply filters to exams and sort by today's exams first
   useEffect(() => {
     let result = [...exams];

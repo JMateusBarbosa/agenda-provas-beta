@@ -11,14 +11,23 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
+/**
+ * Interface para as props do componente DeleteConfirmation
+ */
 interface DeleteConfirmationProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  examId: string;
-  studentName: string;
+  isOpen: boolean;            // Controla se o diálogo está aberto
+  onClose: () => void;        // Função chamada ao fechar o diálogo
+  onConfirm: () => void;      // Função chamada ao confirmar a exclusão
+  examId: string;             // ID do exame a ser excluído
+  studentName: string;        // Nome do aluno para exibição na confirmação
 }
 
+/**
+ * Componente de Confirmação de Exclusão
+ * 
+ * Exibe um diálogo modal para confirmar a exclusão de um agendamento de exame.
+ * Mostra o nome do aluno e avisa que a ação não pode ser desfeita.
+ */
 const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   isOpen,
   onClose,
