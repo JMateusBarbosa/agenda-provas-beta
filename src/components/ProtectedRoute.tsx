@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 /**
@@ -22,6 +22,19 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Limitar o tempo de carregamento para evitar loops infinitos
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (loading) {
+        console.warn('Tempo de carregamento excedido, redirecionando para login');
+        navigate('/login', { replace: true });
+      }
+    }, 5000); // 5 segundos como timeout máximo
+
+    return () => clearTimeout(timeoutId);
+  }, [loading, navigate]);
 
   // Mostrar indicador de carregamento enquanto verifica autenticação
   if (loading) {

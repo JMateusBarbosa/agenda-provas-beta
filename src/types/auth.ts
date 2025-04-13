@@ -12,4 +12,5 @@ export interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   schoolId: string | null;
+  authChecked: boolean;
 }

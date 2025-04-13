@@ -19,7 +19,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
       
       <main className="flex-1 container pt-24 pb-20 px-4 sm:px-6">
         {(title || description) && (
-          <div className="mb-6">
+          <div className="mb-6 text-center max-w-3xl mx-auto">
             {title && <h1 className="text-3xl font-bold text-navy mb-2">{title}</h1>}
             {description && <p className="text-gray-600">{description}</p>}
           </div>

@@ -1,6 +1,5 @@
 
 import React, { createContext, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AuthContextType } from '@/types/auth';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useAuthActions } from '@/hooks/useAuthActions';
@@ -16,7 +15,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
  */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Utiliza o hook para gerenciar o estado da autenticação
-  const { user, setUser, loading, setLoading } = useAuthState();
+  const { user, setUser, loading, setLoading, authChecked } = useAuthState();
   
   // Utiliza o hook para gerenciar as ações de autenticação
   const { login, logout } = useAuthActions({ setUser, setLoading });
@@ -27,7 +26,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       loading, 
       login, 
       logout, 
-      schoolId: user?.schoolId || null 
+      schoolId: user?.schoolId || null,
+      authChecked
     }}>
       {children}
     </AuthContext.Provider>

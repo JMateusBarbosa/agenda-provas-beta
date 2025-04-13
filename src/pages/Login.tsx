@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -31,7 +32,18 @@ type LoginFormValues = z.infer<typeof loginSchema>;
  */
 const Login = () => {
   // Hook de autenticação que fornece a função de login e estado de carregamento
-  const { login, loading } = useAuth();
+  const { login, loading, user, authChecked } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Redirecionar para a página inicial se já estiver autenticado
+  useEffect(() => {
+    // Só redireciona quando a verificação de autenticação já foi concluída e o usuário existe
+    if (authChecked && user) {
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
+    }
+  }, [user, authChecked, navigate, location]);
   
   // Configuração do formulário com validação
   const form = useForm<LoginFormValues>({
@@ -47,8 +59,21 @@ const Login = () => {
    * Chama a função de login do AuthContext com o username e senha
    */
   const onSubmit = async (data: LoginFormValues) => {
-    await login(data.username, data.password);
+    try {
+      await login(data.username, data.password);
+    } catch (error) {
+      console.error('Erro ao realizar login:', error);
+    }
   };
+
+  // Mostrar um loading se ainda estiver verificando a autenticação
+  if (!authChecked && loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-navy"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

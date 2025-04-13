@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CalendarDays, Menu, X, LogOut, User } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -26,6 +26,21 @@ const Navbar: React.FC = () => {
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+  
+  // Fechar o menu quando a tela for rolada para baixo
+  useEffect(() => {
+    const handleScroll = () => {
+      if (mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [mobileMenuOpen]);
   
   // Gerar iniciais do nome para o avatar
   const getInitials = (name: string) => {
