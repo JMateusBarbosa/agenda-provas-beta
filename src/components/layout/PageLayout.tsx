@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Navbar from '@/components/Navbar';
+import Footer from './Footer';
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -27,9 +28,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
         {children}
       </main>
       
-      <footer className="bg-navy text-white py-4 text-center text-sm">
-        © {new Date().getFullYear()} Sistema de Agendamento de Provas - Todos os direitos reservados.
-      </footer>
+      <Footer />
     </div>
   );
 };

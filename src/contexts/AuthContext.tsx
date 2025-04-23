@@ -20,15 +20,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Utiliza o hook para gerenciar as ações de autenticação
   const { login, logout } = useAuthActions({ setUser, setLoading });
   
+  // Valor do contexto com todos os dados e funções de autenticação
+  const contextValue: AuthContextType = {
+    user, 
+    loading, 
+    login, 
+    logout, 
+    schoolId: user?.schoolId || null,
+    authChecked
+  };
+  
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      login, 
-      logout, 
-      schoolId: user?.schoolId || null,
-      authChecked
-    }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

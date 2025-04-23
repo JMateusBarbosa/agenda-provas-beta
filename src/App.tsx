@@ -6,12 +6,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import ScheduleExam from "./pages/ScheduleExam";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -21,8 +29,14 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            {/* Landing Page - accessible to everyone */}
+            <Route path="/" element={<Landing />} />
+            
+            {/* Login Route */}
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={
+            
+            {/* Protected Routes */}
+            <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Index />
               </ProtectedRoute>
@@ -32,9 +46,11 @@ const App = () => (
                 <ScheduleExam />
               </ProtectedRoute>
             } />
-            {/* Rota para redirecionar qualquer URL inválida para a página 404 */}
+            
+            {/* Not Found Route */}
             <Route path="/404" element={<NotFound />} />
-            {/* Redirecionar para home ou 404 dependendo da rota */}
+            
+            {/* Redirect any other routes to 404 */}
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
         </AuthProvider>

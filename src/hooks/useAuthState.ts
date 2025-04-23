@@ -19,6 +19,7 @@ export const useAuthState = () => {
   useEffect(() => {
     // Flag para controlar se o componente ainda está montado
     let isMounted = true;
+    let timeoutId: number | undefined;
     
     // Verificar o estado da autenticação no carregamento
     const checkAuth = async () => {
@@ -30,8 +31,10 @@ export const useAuthState = () => {
         
         if (error) {
           console.error('Erro ao verificar sessão:', error);
-          setLoading(false);
-          setAuthChecked(true);
+          if (isMounted) {
+            setLoading(false);
+            setAuthChecked(true);
+          }
           return;
         }
         
@@ -48,22 +51,36 @@ export const useAuthState = () => {
           
           if (userError) {
             console.error('Erro ao buscar dados do usuário:', userError);
+            // Se houver erro ao buscar o usuário, fazemos logout
             await supabase.auth.signOut();
-            setUser(null);
+            if (isMounted) {
+              setUser(null);
+              setLoading(false);
+              setAuthChecked(true);
+            }
           } else if (userData) {
-            setUser({
-              id: userData.id,
-              email: userData.email,
-              name: userData.name,
-              schoolId: userData.school_id,
-              username: userData.username
-            });
+            if (isMounted) {
+              setUser({
+                id: userData.id,
+                email: userData.email,
+                name: userData.name,
+                schoolId: userData.school_id,
+                username: userData.username
+              });
+              setLoading(false);
+              setAuthChecked(true);
+            }
+          }
+        } else {
+          // Não há sessão ativa
+          if (isMounted) {
+            setUser(null);
+            setLoading(false);
+            setAuthChecked(true);
           }
         }
       } catch (error) {
         console.error('Erro ao verificar autenticação:', error);
-      } finally {
-        // Se o componente ainda estiver montado, atualize o estado
         if (isMounted) {
           setLoading(false);
           setAuthChecked(true);
@@ -71,11 +88,22 @@ export const useAuthState = () => {
       }
     };
 
+    // Definir um timeout para garantir que o estado de carregamento não fique preso
+    timeoutId = window.setTimeout(() => {
+      if (isMounted && loading) {
+        console.warn('Timeout de verificação de autenticação atingido');
+        setLoading(false);
+        setAuthChecked(true);
+      }
+    }, 5000);
+
     checkAuth();
     
     // Configurar listener para mudanças de autenticação
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!isMounted) return;
+      
+      console.log('Auth state change:', event);
       
       if (event === 'SIGNED_IN' && session) {
         // Buscar os dados completos do usuário
@@ -90,28 +118,37 @@ export const useAuthState = () => {
         if (userError) {
           console.error('Erro ao buscar dados do usuário:', userError);
           await supabase.auth.signOut();
-          setUser(null);
+          if (isMounted) {
+            setUser(null);
+            setLoading(false);
+            setAuthChecked(true);
+          }
         } else if (userData) {
-          setUser({
-            id: userData.id,
-            email: userData.email,
-            name: userData.name,
-            schoolId: userData.school_id,
-            username: userData.username
-          });
+          if (isMounted) {
+            setUser({
+              id: userData.id,
+              email: userData.email,
+              name: userData.name,
+              schoolId: userData.school_id,
+              username: userData.username
+            });
+            setLoading(false);
+            setAuthChecked(true);
+          }
         }
       } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-      }
-      
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-        setAuthChecked(true);
+        if (isMounted) {
+          setUser(null);
+          setLoading(false);
+          setAuthChecked(true);
+        }
       }
     });
 
-    // Limpar o listener ao desmontar o componente e marcar como desmontado
+    // Limpar o listener e timeout ao desmontar o componente e marcar como desmontado
     return () => {
       isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
       authListener.subscription.unsubscribe();
     };
   }, []);
