@@ -243,7 +243,7 @@ const ExamForm: React.FC<ExamFormProps> = ({ onSubmit, onCancel, schoolId }) => 
             <SelectValue placeholder="Selecione o horário" />
           </SelectTrigger>
           <SelectContent>
-            {['7:30', '8:30', '9:30', '14:00', '15:00', '16:00', '17:00', '18:00'].map((time) => (
+            {['7:30', '8:00','8:30','9:00', '9:30','10:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map((time) => (
               <SelectItem key={time} value={time}>
                 {time}
               </SelectItem>
