@@ -53,11 +53,11 @@ const ScheduleExam = () => {
 
   const handleConfirmationClose = () => {
     setShowConfirmation(false);
-    navigate('/');
+    navigate('/dashboard');
   };
 
   const handleCancel = () => {
-    navigate('/');
+    navigate('/dashboard');
   };
 
   return (
