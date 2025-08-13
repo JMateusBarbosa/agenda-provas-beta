@@ -36,6 +36,7 @@ export const useAuthActions = ({ setUser, setLoading }: UseAuthActionsParams) =>
   const login = async (username: string, password: string) => {
     try {
       setLoading(true);
+      console.log('Iniciando processo de login para:', username);
       
       // Primeiro, procurar o usuário pelo nome de usuário para obter o email
       const { data: userData, error: userError } = await supabase
@@ -45,31 +46,44 @@ export const useAuthActions = ({ setUser, setLoading }: UseAuthActionsParams) =>
         .single();
       
       if (userError || !userData) {
+        console.error('Usuário não encontrado:', userError);
         toast({
           title: "Erro de autenticação",
           description: "Nome de usuário ou senha inválidos",
           variant: "destructive",
         });
+        setLoading(false);
         return;
       }
       
+      console.log('Email encontrado para o usuário:', userData.email);
+      
       // Agora fazer login com o email encontrado
-      const { error } = await supabase.auth.signInWithPassword({ 
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ 
         email: userData.email, 
         password 
       });
       
-      if (error) {
+      if (authError) {
+        console.error('Erro na autenticação:', authError);
         toast({
           title: "Erro de autenticação",
           description: "Nome de usuário ou senha inválidos",
           variant: "destructive",
         });
+        setLoading(false);
         return;
       }
       
-      // Navegar para o dashboard após login bem-sucedido em vez da página inicial
+      console.log('Login realizado com sucesso');
+      
+      // O listener do onAuthStateChange vai capturar o evento SIGNED_IN
+      // e atualizar o estado do usuário automaticamente
+      
+      // Navegar para o dashboard após login bem-sucedido
       navigate('/dashboard');
+      setLoading(false);
+      
     } catch (error) {
       console.error('Erro no login:', error);
       toast({
@@ -77,7 +91,6 @@ export const useAuthActions = ({ setUser, setLoading }: UseAuthActionsParams) =>
         description: "Ocorreu um erro durante o login. Tente novamente.",
         variant: "destructive",
       });
-    } finally {
       setLoading(false);
     }
   };
@@ -90,14 +103,18 @@ export const useAuthActions = ({ setUser, setLoading }: UseAuthActionsParams) =>
    */
   const logout = async () => {
     try {
-      // Primeiro, definimos o estado do usuário como null imediatamente para resposta rápida da UI
-      setUser(null);
+      console.log('Iniciando logout...');
       
-      // Em seguida, redireciona para a página de login antes de completar o processo de signOut
+      // Primeiro, fazemos o signOut no Supabase
+      await supabase.auth.signOut();
+      
+      // O listener do onAuthStateChange vai capturar o evento SIGNED_OUT
+      // e limpar o estado do usuário automaticamente
+      
+      // Redireciona para a página de login
       navigate('/login');
       
-      // Por fim, fazemos o signOut no Supabase em segundo plano
-      await supabase.auth.signOut();
+      console.log('Logout realizado com sucesso');
     } catch (error) {
       console.error('Erro ao sair:', error);
       toast({

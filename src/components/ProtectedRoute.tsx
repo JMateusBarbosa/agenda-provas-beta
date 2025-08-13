@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 /**
@@ -22,24 +22,16 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading, authChecked } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
 
   // Log the authentication state to help with debugging
   useEffect(() => {
-    console.log('ProtectedRoute auth state:', { user, loading, authChecked });
-  }, [user, loading, authChecked]);
-
-  // Limitar o tempo de carregamento para evitar loops infinitos
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (loading && !authChecked) {
-        console.warn('Tempo de carregamento excedido, redirecionando para login');
-        navigate('/login', { replace: true });
-      }
-    }, 8000); // 8 segundos como timeout máximo
-
-    return () => clearTimeout(timeoutId);
-  }, [loading, authChecked, navigate]);
+    console.log('ProtectedRoute auth state:', { 
+      user: user?.username || 'null', 
+      loading, 
+      authChecked,
+      pathname: location.pathname 
+    });
+  }, [user, loading, authChecked, location.pathname]);
 
   // Se estiver ainda carregando e a autenticação não foi verificada, mostra o indicador
   if (loading && !authChecked) {
@@ -53,12 +45,24 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   // Se a autenticação foi verificada e não há usuário, redireciona para login
   if (authChecked && !user) {
+    console.log('Redirecionando para login - usuário não autenticado');
     // Salvar a rota atual para redirecionamento após login
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
-  // Renderizar as rotas protegidas se autenticado
-  return <>{children}</>;
+  // Se há usuário autenticado, renderizar as rotas protegidas
+  if (user) {
+    console.log('Usuário autenticado, renderizando conteúdo protegido');
+    return <>{children}</>;
+  }
+
+  // Fallback de segurança
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-navy"></div>
+      <p className="ml-3 text-navy">Carregando...</p>
+    </div>
+  );
 };
 
 export default ProtectedRoute;
