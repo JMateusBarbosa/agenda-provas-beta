@@ -23,7 +23,7 @@ const getPastDate = (daysToSubtract: number): Date => {
 
 // Available time slots for exams
 export const timeSlots = [
-  '7:30','8:00', '8:30','9:00','9:30','10:00', '14:00', '15:00', '16:00', '17:00', '18:00'
+  '07:30', '08:00','08:30','09:00', '09:30','10:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
 ];
 
 // Available PC numbers
