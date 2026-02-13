@@ -108,7 +108,7 @@ const TableRow: React.FC<TableRowProps> = ({ exam, isToday, onUpdate, onDelete }
         )}
       </td>
       
-      {/* Exam Date */}
+      {/* Exam Date - exibe a data efetiva (exam_ts ou exam_date) */}
       <td className="px-4 py-3 text-center border-b whitespace-nowrap">
         {isEditing ? (
           <Popover>
@@ -116,20 +116,20 @@ const TableRow: React.FC<TableRowProps> = ({ exam, isToday, onUpdate, onDelete }
               <Button variant="outline" className="w-32">
                 {updatedExam.examDate 
                   ? format(updatedExam.examDate, 'dd/MM/yyyy')
-                  : format(exam.examDate, 'dd/MM/yyyy')}
+                  : format(exam.examTs || exam.examDate, 'dd/MM/yyyy')}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
               <Calendar
                 mode="single"
-                selected={updatedExam.examDate || exam.examDate}
+                selected={updatedExam.examDate || exam.examTs || exam.examDate}
                 onSelect={date => handleChange('examDate', date)}
                 initialFocus
               />
             </PopoverContent>
           </Popover>
         ) : (
-          format(exam.examDate, 'dd/MM/yyyy')
+          format(exam.examTs || exam.examDate, 'dd/MM/yyyy')
         )}
       </td>
       

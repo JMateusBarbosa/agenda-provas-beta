@@ -18,7 +18,7 @@ interface ExamConfirmationDialogProps {
   studentName: string;
   module: string;
   pcNumber: string;
-  examDate: Date;
+  examTs: string; // agora obrigatório
   examTime: string;
   examType: ExamType;
   onClose: () => void;
@@ -30,11 +30,12 @@ const ExamConfirmationDialog: React.FC<ExamConfirmationDialogProps> = ({
   studentName,
   module,
   pcNumber,
-  examDate,
+  examTs,
   examTime,
   examType,
   onClose,
 }) => {
+  const localDateStr = examTs ? format(new Date(examTs), "dd/MM/yyyy") : '';
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -58,9 +59,9 @@ const ExamConfirmationDialog: React.FC<ExamConfirmationDialogProps> = ({
             <span>{pcNumber}</span>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium">Data:</span>
-            <span>{examDate ? format(examDate, "dd/MM/yyyy") : ''}</span>
-          </div>
+           <span className="font-medium">Data:</span>
+              <span>{localDateStr}</span>
+            </div>
           <div className="flex justify-between">
             <span className="font-medium">Horário:</span>
             <span>{examTime}</span>

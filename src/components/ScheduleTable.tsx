@@ -97,15 +97,19 @@ const ScheduleTable: React.FC<ScheduleTableProps> = ({ exams, onUpdate, onDelete
             </tr>
           </thead>
           <tbody>
-            {exams.map((exam) => (
-              <TableRow
-                key={exam.id}
-                exam={exam}
-                isToday={isSameDay(exam.examDate, today)}
-                onUpdate={onUpdate}
-                onDelete={(id) => openDeleteDialog(id, exam.studentName)}
-              />
-            ))}
+            {exams.map((exam) => {
+              // Usa exam_ts se disponível, senão exam_date
+              const effectiveDate = exam.examTs || exam.examDate;
+              return (
+                <TableRow
+                  key={exam.id}
+                  exam={exam}
+                  isToday={isSameDay(effectiveDate, today)}
+                  onUpdate={onUpdate}
+                  onDelete={(id) => openDeleteDialog(id, exam.studentName)}
+                />
+              );
+            })}
           </tbody>
         </table>
       </div>

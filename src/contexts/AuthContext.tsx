@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext } from 'react';
 import { AuthContextType } from '@/types/auth';
-import { useAuthState } from '@/hooks/useAuthState';
+import { useAuthState2 } from '@/hooks/useAuthState2';
 import { useAuthActions } from '@/hooks/useAuthActions';
 
 // Criação do contexto de autenticação
@@ -15,7 +15,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
  */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Utiliza o hook para gerenciar o estado da autenticação
-  const { user, setUser, loading, setLoading, authChecked } = useAuthState();
+  const { user, setUser, loading, setLoading, authChecked } = useAuthState2();
   
   // Utiliza o hook para gerenciar as ações de autenticação
   const { login, logout } = useAuthActions({ setUser, setLoading });

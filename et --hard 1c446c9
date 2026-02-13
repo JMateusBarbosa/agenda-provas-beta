@@ -1,0 +1,58 @@
+[33md392bf6[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge branch 'main' of https://github.com/JMateusBarbosa/prova-scheduler-portal
+[33m1bbebe8[m teste do bug da data
+[33m1397eae[m Merge pull request #1 from JMateusBarbosa/codex/analyze-todays-commits-for-timezone-fix
+[33m1c446c9[m Ajusta filtro por data para evitar deslocamento de fuso
+[33md099fc4[m Corrige filtros que ocultavam provas recentes
+[33m11e77cf[m Simplified date filtering to Manaus strings
+[33m300ac91[m Changes
+[33m685e289[m teste 3 de correção de bug do filtro de datas futuras
+[33mf6ba6e8[m teste 2 de correção de bug do filtro de datas futuras
+[33m9394e4d[m teste de correção de bug das datas
+[33m14dfbad[m Ajustou filtros por data
+[33m4f81c1f[m Changes
+[33ma885e94[m Corrigiu filtro deData timezone
+[33m991f868[m Changes
+[33mb263e75[m Migrated to exam_ts usage
+[33m831c1dc[m Changes
+[33m23bf807[m Connect to Supabase project
+[33m2de0c5b[m Fix: Authentication state issues
+[33m749686d[m Fix authentication reload issue
+[33mcb6b430[m Fix authentication reload issue
+[33m0205fea[m Fix redirect on button press
+[33ma863755[m Fix: Redirect to dashboard after exam creation
+[33m6741659[m atualização de novas datas
+[33mfbfd98e[m correção do footer
+[33m2af3a02[m Revert footer changes
+[33mab56cc6[m Replace icons and titles
+[33me1be5fa[m Refactor: Improve code organization in Index page
+[33md3ec31b[m Fix: Footer alignment and visibility
+[33m45823d4[m atualização de informações do footer
+[33mcf56a18[m Fix: Redirect "Página Inicial" to dashboard
+[33mb8f0dd5[m Fix: Improve mobile responsiveness
+[33m804bee8[m Fix: Login redirect loop and authentication flow
+[33mdd8e487[m feat: Add back button to login page
+[33m179fb28[m Fix: Login screen reload and UI updates
+[33m3e15dc3[m Fix: Login and redirect issues
+[33m95351aa[m Cetralização do titulo e descrição da pagina do formulario de agendamento
+[33m403c900[m Fix: Authentication and routing issues
+[33m233dc63[m Refactor: Split AuthContext into smaller files
+[33me815ec5[m Fix: Improve logout performance
+[33mfc7b1fe[m Refactor: Add detailed comments and checks
+[33m5415611[m feat: Document database schema and login flow
+[33ma11beb9[m Fix: Login with username and password
+[33m9e24599[m Fix: Login with username
+[33m2caad3d[m Refactor: Implement username-based login
+[33m5e2394a[m Refactor: Split ScheduleExam.tsx into smaller components
+[33m8077eaa[m Fix: Add schoolId to exam data
+[33m033fc69[m feat: Implement user authentication
+[33m73afdea[m Atualização para estado do sistema em pleno funcionamento
+[33mb86e7f5[m Implement exam sorting and prepare backend
+[33m55e716d[m Fix loading issue and update filters
+[33me189745[m Fix type error in FilterBar component
+[33m958c1d6[m Update UI and add pagination
+[33m97acea7[m Fix Tailwind CSS circular dependency
+[33m72b1133[m Implement "Agendar Nova Prova" screen
+[33m7a358a8[m Fix type error in filter
+[33mff5d88d[m Refactor: Implement UI enhancements
+[33m8ac10dd[m Implement Initial Scheduling Screen
+[33m763cf9d[m Use tech stack vite_react_shadcn_ts [skip gpt_engineer]

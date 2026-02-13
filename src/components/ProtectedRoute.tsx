@@ -34,7 +34,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }, [user, loading, authChecked, location.pathname]);
 
   // Se estiver ainda carregando e a autenticação não foi verificada, mostra o indicador
-  if (loading && !authChecked) {
+  if (loading || !authChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-navy"></div>
@@ -44,7 +44,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
 
   // Se a autenticação foi verificada e não há usuário, redireciona para login
-  if (authChecked && !user) {
+  if (authChecked && !loading && !user) {
     console.log('Redirecionando para login - usuário não autenticado');
     // Salvar a rota atual para redirecionamento após login
     return <Navigate to="/login" replace state={{ from: location }} />;

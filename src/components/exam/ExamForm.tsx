@@ -8,6 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { makeExamTsFromDateAndTime } from '@/utils/dates';
 import {
   Select,
   SelectContent,
@@ -27,7 +28,7 @@ interface ExamFormProps {
     studentName: string;
     module: string;
     pcNumber: number;
-    examDate: Date;
+    examTs: string;           // <-- ISO timestamptz
     examTime: string;
     examType: ExamType;
     status: ExamStatus;
@@ -58,16 +59,18 @@ const ExamForm: React.FC<ExamFormProps> = ({ onSubmit, onCancel, schoolId }) => 
   });
 
   const validateForm = () => {
-    const newErrors = {
-      studentName: !studentName,
-      module: !module,
-      pcNumber: !pcNumber,
-      examTime: !examTime,
-    };
-    
-    setErrors(newErrors);
-    return !Object.values(newErrors).some(error => error);
+  const pcNum = parseInt(pcNumber, 10);
+  const newErrors = {
+    studentName: !studentName,
+    module: !module,
+    pcNumber: !pcNumber || Number.isNaN(pcNum) || pcNum < 1 || pcNum > 14,
+    examTime: !examTime,
   };
+  
+  setErrors(newErrors);
+  return !Object.values(newErrors).some(Boolean);
+};
+
 
   const resetForm = () => {
     setStudentName('');
@@ -108,18 +111,29 @@ const ExamForm: React.FC<ExamFormProps> = ({ onSubmit, onCancel, schoolId }) => 
     setIsSaving(true);
     
     try {
+      // gerar exam_ts no fuso Manaus e enviar como ISO UTC
+      const examTs = makeExamTsFromDateAndTime(examDate, examTime);
+
+      // double-check pcNumber parsing
+      const pcNum = parseInt(pcNumber, 10);
+      if (Number.isNaN(pcNum)) {
+        throw new Error('Número do PC inválido');
+      }
+
       const examData = {
         studentName,
         module,
-        pcNumber: parseInt(pcNumber),
-        examDate,
+        pcNumber: pcNum,
+        examTs,                  // ISO string
         examTime,
         examType,
         status: "Pendente" as ExamStatus,
-        schoolId: schoolId,
+        schoolId,
       };
-      
+
+
       await onSubmit(examData);
+
       setIsSaving(false);
     } catch (error) {
       console.error("Erro ao agendar prova:", error);
@@ -243,7 +257,7 @@ const ExamForm: React.FC<ExamFormProps> = ({ onSubmit, onCancel, schoolId }) => 
             <SelectValue placeholder="Selecione o horário" />
           </SelectTrigger>
           <SelectContent>
-            {['7:30', '8:00','8:30','9:00', '9:30','10:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map((time) => (
+            {['07:30', '08:00','08:30','09:00', '09:30','10:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'].map((time) => (
               <SelectItem key={time} value={time}>
                 {time}
               </SelectItem>

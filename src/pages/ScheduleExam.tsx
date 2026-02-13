@@ -16,40 +16,43 @@ const ScheduleExam = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   
   // Form state for confirmation dialog
-  const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({
     studentName: '',
     module: '',
     pcNumber: '',
-    examDate: new Date(),
+    examTs: '' as string,    // ISO string gerada pelo ExamForm (exam_ts)
     examTime: '',
     examType: 'P1' as ExamType,
   });
 
-  const handleSubmit = async (examData: any) => {
+
+    const handleSubmit = async (examData: any) => {
     try {
-      const data = await examApi.createExam(examData, schoolId);
-      
+      // examData já deve conter schoolId (ExamForm inclui antes de chamar)
+      const data = await examApi.createExam(examData); // apenas 1 argumento
+
       toast({
         title: "Prova agendada",
         description: `Agendamento para ${examData.studentName} realizado com sucesso.`,
       });
-      
-      // Store form data for confirmation dialog
+
+      // Store form data for confirmation dialog (usar examTs em vez de examDate)
       setFormData({
         studentName: examData.studentName,
         module: examData.module,
-        pcNumber: examData.pcNumber.toString(),
-        examDate: examData.examDate,
+        pcNumber: String(examData.pcNumber),
+        examTs: examData.examTs ?? '',   // examTs é ISO string enviada pelo ExamForm
         examTime: examData.examTime,
         examType: examData.examType,
       });
-      
+
       setShowConfirmation(true);
     } catch (error) {
       console.error("Erro ao agendar prova:", error);
-      throw error; // Re-throw to be caught by ExamForm
+      throw error; // Re-throw para o ExamForm lidar
     }
   };
+
 
   const handleConfirmationClose = () => {
     setShowConfirmation(false);
@@ -73,17 +76,18 @@ const ScheduleExam = () => {
         />
       </div>
       
-      <ExamConfirmationDialog
+        <ExamConfirmationDialog
         open={showConfirmation}
         onOpenChange={setShowConfirmation}
         studentName={formData.studentName}
         module={formData.module}
         pcNumber={formData.pcNumber}
-        examDate={formData.examDate}
+        examTs={formData.examTs}        // agora passamos examTs (ISO string)
         examTime={formData.examTime}
         examType={formData.examType}
         onClose={handleConfirmationClose}
       />
+
     </PageLayout>
   );
 };

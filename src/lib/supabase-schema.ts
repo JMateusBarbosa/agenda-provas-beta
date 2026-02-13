@@ -1,53 +1,56 @@
-
 import { ExamSchedule } from './types';
 
 /**
- * Supabase Database Schema
- * 
- * Este arquivo define as funções para converter entre os formatos de dados
- * usados no frontend (tipos TypeScript) e os formatos usados no Supabase (banco de dados).
- * 
- * Relação entre nomenclaturas:
- * - Frontend: camelCase (studentName)
- * - Supabase: snake_case (student_name)
+ * Converte dados do frontend para o formato do Supabase
+ * NÃO gera datas. Apenas converte campos.
  */
+export const toSupabaseExam = (
+  exam: Partial<ExamSchedule>
+): Record<string, any> => {
+  const out: Record<string, any> = {};
 
-/**
- * Converte um objeto ExamSchedule do formato da aplicação para o formato do Supabase
- * 
- * @param exam Objeto de agendamento no formato da aplicação (sem ID)
- * @param schoolId ID da escola associada ao exame
- * @returns Objeto no formato esperado pelo Supabase
- */
-export const toSupabaseExam = (exam: Omit<ExamSchedule, 'id'>, schoolId: string): Record<string, any> => {
-  return {
-    student_name: exam.studentName,
-    module: exam.module,
-    pc_number: exam.pcNumber,
-    exam_date: exam.examDate.toISOString(),
-    exam_time: exam.examTime,
-    exam_type: exam.examType,
-    status: exam.status,
-    school_id: schoolId
-  };
+  if (exam.studentName !== undefined) out.student_name = exam.studentName;
+  if (exam.module !== undefined) out.module = exam.module;
+  if (exam.pcNumber !== undefined) out.pc_number = exam.pcNumber;
+  if (exam.examTime !== undefined) out.exam_time = exam.examTime;
+  if (exam.examType !== undefined) out.exam_type = exam.examType;
+  if (exam.status !== undefined) out.status = exam.status;
+  if (exam.schoolId !== undefined) out.school_id = exam.schoolId;
+
+  // Fonte da verdade
+  if (exam.examTs !== undefined) {
+    out.exam_ts = exam.examTs instanceof Date ? exam.examTs.toISOString() : exam.examTs;
+  }
+
+   // Campo legado (opcional). Se não vier, derive do exam_ts para atender NOT NULL.
+  if (exam.examDate !== undefined && exam.examDate != null) {
+     out.exam_date = exam.examDate.toISOString();
+  } else if (exam.examTs !== undefined && exam.examTs !== null) {
+    const examTsDate = exam.examTs instanceof Date ? exam.examTs : new Date(exam.examTs);
+    if (!Number.isNaN(examTsDate.getTime())) {
+      out.exam_date = examTsDate.toISOString();
+    }
+  }
+
+  return out;
 };
 
 /**
- * Converte um registro do Supabase para o formato de ExamSchedule da aplicação
- * 
- * @param record Registro retornado pelo Supabase
- * @returns Objeto ExamSchedule no formato usado pela aplicação
+ * Converte registro do Supabase para o formato da aplicação
  */
 export const fromSupabaseExam = (record: Record<string, any>): ExamSchedule => {
+  const examTs = record.exam_ts ? new Date(record.exam_ts) : null;
+
   return {
     id: record.id,
     studentName: record.student_name,
     module: record.module,
     pcNumber: record.pc_number,
-    examDate: new Date(record.exam_date),
+    examDate: examTs ?? new Date(record.exam_date),
     examTime: record.exam_time,
     examType: record.exam_type,
     status: record.status,
-    schoolId: record.school_id
+    schoolId: record.school_id,
+    examTs,
   };
 };
