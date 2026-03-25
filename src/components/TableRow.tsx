@@ -49,8 +49,6 @@ const TableRow: React.FC<TableRowProps> = ({ exam, isToday, onUpdate, onDelete }
         return 'status-badge status-pending';
       case 'Aprovado':
         return 'status-badge status-approved';
-      case 'Reprovado':
-        return 'status-badge status-failed';
       default:
         return 'status-badge';
     }
@@ -190,7 +188,6 @@ const TableRow: React.FC<TableRowProps> = ({ exam, isToday, onUpdate, onDelete }
             <SelectContent>
               <SelectItem value="Pendente">Pendente</SelectItem>
               <SelectItem value="Aprovado">Aprovado</SelectItem>
-              <SelectItem value="Reprovado">Reprovado</SelectItem>
             </SelectContent>
           </Select>
         ) : (

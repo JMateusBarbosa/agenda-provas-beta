@@ -6,7 +6,7 @@
 /**
  * Status possíveis para um exame
  */
-export type ExamStatus = 'Pendente' | 'Aprovado' | 'Reprovado';
+export type ExamStatus = 'Pendente' | 'Aprovado';
 
 /**
  * Tipos possíveis de exame

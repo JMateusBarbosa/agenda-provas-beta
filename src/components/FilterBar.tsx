@@ -177,7 +177,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ filters, setFilters }) => {
                 <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="Pendente">Pendente</SelectItem>
                 <SelectItem value="Aprovado">Aprovado</SelectItem>
-                <SelectItem value="Reprovado">Reprovado</SelectItem>
               </SelectContent>
             </Select>
           </div>
